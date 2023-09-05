@@ -1,0 +1,53 @@
+# HTTP Server.
+[server]
+	address        = ":8199"
+	serverRoot     = "public"
+	serverAgent    = "gfcq_product_kpi"
+	logPath        = "/tmp/log/gfcq_product_kpi/server"
+	nameToUriType  = 2
+	routeOverWrite = true
+
+# Logger configurations.
+[logger]
+    path   = "D:/code/product/golang/src/gfcq_product_kpi/tmp/log/gfcq_product_kpi"
+    level  = "all"
+    stdout = true
+    file = "{Y-m-d}.log"
+    rotateSize = "100M"
+    rotateBackupLimit = 10
+    rotateBackupExpire = "60d"
+    rotateBackupCompress = 9
+    rotateCheckInterval = "24h"
+
+# Database configurations.
+[database]
+    link  = "mysql:root:123456@tcp(172.25.0.5:3306)/cqgf_product?loc=Local"
+    debug = true
+    # 数据库日志对象配置
+    [database.logger]
+        Path   = "/tmp/log/cqgf_product/sql"
+        Level  = "all"
+        Stdout = true
+
+# GF-CLI工具配置
+[gfcli]
+    # 自定义DAO生成配置(默认是读取database配置)
+    [[gfcli.gen.dao]]
+        link   = "mysql:root:123456@tcp(172.25.0.5:3306)/cqgf_product?loc=Local"
+        tables = "cqgf_crew_duty_index,cqgf_crew_hours_index,cqgf_crew_kpi_rule,cqgf_crew_manage_index,cqgf_crew_overtime_rule,cqgf_crew_solve_rule,cqgf_department,cqgf_employee,cqgf_employee_job,cqgf_job,cqgf_job_level,cqgf_pm_duty_index,cqgf_pm_hours_index,cqgf_pm_kpi_rule,cqgf_pm_manage_index,cqgf_pm_overtime_rule,cqgf_pm_solve_rule,cqgf_product,cqgf_product_budget_access,cqgf_product_level_assess,cqgf_product_level_confirm,cqgf_product_member,cqgf_product_member_kpi,cqgf_product_member_prize,cqgf_product_mode,cqgf_product_mode_stage,cqgf_product_roles,cqgf_product_stage_kpi,cqgf_product_stage_radio,cqgf_product_stage_rule,cqgf_product_type,cqgf_user,cqgf_config,cqgf_product_member_key,cqgf_user_log"
+        removePrefix = "cqgf_"
+        path = "./app"
+
+[user]
+    encrypt = "gsha1"
+    [user.casbin]
+        table = "casbin_policy_test"
+        link = "mysql:root:123456@tcp(172.25.0.5:3306)/cqgf_auth?loc=Local"
+
+[grpc]
+    [grpc.organize]
+        name = "organize"
+        link = "172.25.0.2:9090"
+    [grpc.config]
+        name = "gfcq_config"
+        link = "172.25.0.3:9080"
