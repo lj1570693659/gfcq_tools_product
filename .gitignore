@@ -1,0 +1,10 @@
+.DS_Store
+.buildpath
+.hgignore.swp
+.project
+.orig
+.swp
+.idea/
+*/.DS_Store
+tmp/
+test/

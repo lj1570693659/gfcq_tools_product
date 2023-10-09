@@ -1,23 +1,26 @@
-# gf docker -t gf-demos
 FROM loads/alpine:3.8
 
-LABEL maintainer="john@goframe.org"
+LABEL maintainer="1570693659@qq.com"
 
 ###############################################################################
 #                                INSTALLATION
 ###############################################################################
 
 # 设置固定的项目路径
-ENV WORKDIR /var/www/gf-demos
+ENV WORKDIR /app/main
 
 # 添加应用可执行文件，并设置执行权限
-ADD ./bin/linux_amd64/main   $WORKDIR/main
+ADD ./main   $WORKDIR/main
+ADD ./config/config_pro.toml   $WORKDIR/config/config.toml
+ADD ./document/auth/model.conf   $WORKDIR/document/auth/model.conf
+RUN mkdir -p $WORKDIR/public/
+ADD ./public/  $WORKDIR/public/
 RUN chmod +x $WORKDIR/main
+RUN chmod +x $WORKDIR/config/config.toml
+RUN chmod +x $WORKDIR/document/auth/model.conf
 
-# 添加I18N多语言文件、静态文件、配置文件、模板文件
-ADD public   $WORKDIR/public
-ADD config   $WORKDIR/config
-ADD template $WORKDIR/template
+# 添加静态资源文件
+#ADD resource $WORKDIR/resource
 
 ###############################################################################
 #                                   START

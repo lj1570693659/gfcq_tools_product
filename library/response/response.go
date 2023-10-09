@@ -13,9 +13,9 @@ type JsonResponse struct {
 
 // GetListResponse 列表带分页数据返回结构
 type GetListResponse struct {
-	Page      int32       `json:"page"`
-	Size      int32       `json:"size"`
-	TotalSize int32       `json:"totalSize"`
+	Page      int         `json:"page"`
+	Size      int         `json:"size"`
+	TotalSize int         `json:"totalSize"`
 	Data      interface{} `json:"data"`
 }
 

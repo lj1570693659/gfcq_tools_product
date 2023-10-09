@@ -19,8 +19,8 @@ func init() {
 	//configServerName := g.Config("config.toml").Get("grpc.config.link")
 	//ConfigServer, err := grpc.Dial(gconv.String(configServerName), grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	s := g.Server("gfcq_tools_product")
-	s.SetFileServerEnabled(true)
-	s.AddSearchPath("./public/excel")
+	s := g.Server()
+	//s.SetFileServerEnabled(true)
+	//s.AddSearchPath("./public/excel")
 	s.Plugin(&swagger.Swagger{})
 }
