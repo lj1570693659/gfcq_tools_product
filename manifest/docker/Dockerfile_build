@@ -2,19 +2,19 @@
 FROM golang:1.18 as builder
 
 # 设置环境变量
-ENV HOME /app
-ENV CGO_ENABLED 1
-ENV GOOS linux
-ENV GO111MODULE on
-ENV GOPROXY https://goproxy.cn,direct
+ENV HOME=/app \
+    GO111MODULE=on \
+    CGO_ENABLED=1 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOPROXY=https://goproxy.cn,direct
 
 # 设置工作目录 - 我们所有的文件都存放在工作目录中
 WORKDIR /app
 COPY . .
 
-RUN ls
 # 下载依赖
-RUN go mod tidy
+RUN go mod download
 
 # 编译app
 RUN go build -o main main.go
@@ -23,13 +23,28 @@ RUN go build -o main main.go
 ################################################################################
 ##                                   START
 ################################################################################
-FROM loads/alpine:3.8
-LABEL maintainer="1570693659@qq.com"
+# 构建oracle instance client
+FROM oraclelinux:8 as build_final
 
-RUN apk --no-cache add ca-certificates
+ARG release=19
+ARG update=20
+
+RUN cd /opt/
+
+RUN yum install tar wget && \
+    wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-8.repo && \
+    yum clean all && yum makecache \
+
+RUN  yum -y install oracle-release-el8 && yum-config-manager --enable ol8_oracle_instantclient && \
+     yum -y install oracle-instantclient${release}.${update}-basic oracle-instantclient${release}.${update}-devel oracle-instantclient${release}.${update}-sqlplus && \
+     rm -rf /var/cache/yum
+
+
+RUN wget http://ftp.gnu.org/gnu/glibc/glibc-2.31.tar.gz && \
+    yum -y install make gcc bison python3 gcc-c++
 
 # 设置工作目录
-ENV WORKDIR /app/tools_product
+ENV WORKDIR /go/src
 
 # 将上个容器编译的二进制文件复制到 工作目录
 # 也就是：copy golang环境/工作目录/demo alpine环境/工作目录
@@ -48,4 +63,4 @@ RUN ls
 
 # 所以这里执行的命令是：/bin/demo
 WORKDIR $WORKDIR
-CMD ./main
+#CMD ./main
